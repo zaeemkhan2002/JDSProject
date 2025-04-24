@@ -1,0 +1,69 @@
+from google import genai
+from google.genai import types
+import mimetypes
+import json
+
+def load_audio(path):
+    mime_type, _ = mimetypes.guess_type(path)
+    if not mime_type or not mime_type.startswith("audio/"):
+        raise ValueError(f"Invalid audio file: {path}")
+    with open(path, "rb") as f:
+        return {"mime_type": mime_type, "data": f.read()}
+
+
+def generate_audio_response(audio_path="../user_command.wav"):
+
+    GEMINI_API_KEY = "AIzaSyAfUI8Z-DQqSD196GfD5Hp54ZnVhfbn9C8"
+    # genai.configure(api_key=GEMINI_API_KEY)
+    # model = genai.GenerativeModel("gemini-?2.0-flash-lite")
+
+    client = genai.Client(api_key=GEMINI_API_KEY)
+
+    myfile = client.files.upload(file=audio_path)
+
+
+    prompt = """
+    You are a robot command interpreter. The user will speak a command to the jetson nano robot.
+    Convert that audio command into structured JSON with the following format:
+
+    {
+    "commands": [
+        { "type": "go2goal", "params": { "target": "..." } },
+        { "type": "pickobj", "params": { "object": "..." } },
+        { "type": "dropobj", "params": {} },
+        { "type": "scanobj", "params": {} },
+    ]
+    }
+
+    Only respond with valid JSON. Do not explain.
+    """
+
+    # audio_blob = load_audio(audio_path)
+
+    response = client.models.generate_content(
+        model="gemini-2.0-flash", contents=[prompt, myfile]
+    )   
+    # response = model.generate_content([prompt, audio_blob], stream=False)
+
+    OUTPUT_COMMAND_FILE = "command.json"  # Replace with full path if needed
+
+    # ==== 5. PARSE & DISPLAY ====
+    try:
+        response_text = response.text.strip("json").strip("").strip()
+        commands = json.loads(response_text)
+
+        print("Parsed Robot Commands:\n")
+        print(json.dumps(commands, indent=2))
+
+        # Save to JSON file (overwrite)
+        with open(OUTPUT_COMMAND_FILE, "w") as f:
+            json.dump(commands, f, indent=2)
+            print(f"Commands saved to {OUTPUT_COMMAND_FILE}")
+
+    except Exception as e:
+        print("Failed to parse Gemini response:")
+        print(response.text)
+        print("Error:", e)
+
+
+generate_audio_response()

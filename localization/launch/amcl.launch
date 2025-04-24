@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Launch RPLIDAR -->
+  <include file="$(find rplidar_ros)/launch/rplidar_a2m12.launch"/>
+
+  <!-- Launch custom Odometry Publisher -->
+  <node pkg="localization" type="odom.py" name="odometry_pub" output="screen" launch-prefix="python3"/>
+
+</launch>

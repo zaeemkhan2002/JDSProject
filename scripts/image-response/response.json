@@ -1,0 +1,41 @@
+{
+  "frame_2.png": {
+    "is_object": "No",
+    "lower_hsv": [
+      0,
+      0,
+      0
+    ],
+    "upper_hsv": [
+      0,
+      0,
+      0
+    ]
+  },
+  "frame_0.png": {
+    "is_object": "Yes",
+    "lower_hsv": [
+      40,
+      70,
+      70
+    ],
+    "upper_hsv": [
+      80,
+      255,
+      255
+    ]
+  },
+  "frame_1.png": {
+    "is_object": "No",
+    "lower_hsv": [
+      0,
+      0,
+      0
+    ],
+    "upper_hsv": [
+      0,
+      0,
+      0
+    ]
+  }
+}

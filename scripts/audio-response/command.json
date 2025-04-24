@@ -1,0 +1,10 @@
+{
+  "commands": [
+    {
+      "type": "scanobj",
+      "params": {
+        "object": "green box"
+      }
+    }
+  ]
+}
